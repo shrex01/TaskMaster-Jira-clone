@@ -5,7 +5,13 @@ import { z } from "zod";
 import { updateWorkpaceSchema } from "../schemas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DottedSeperator } from "@/components/dotted-seperator";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
@@ -20,9 +26,12 @@ import { useUpdateWorkspace } from "../api/use-update-workspace";
 interface EditWorkspaceFormProps {
   onCancel?: () => void;
   initialValues: Workspace;
-};
+}
 
-export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) => {
+export const EditWorkspaceForm = ({
+  onCancel,
+  initialValues,
+}: EditWorkspaceFormProps) => {
   const router = useRouter();
   const { mutate, isPending } = useUpdateWorkspace();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,35 +41,46 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
     defaultValues: {
       ...initialValues,
       image: initialValues.imageUrl ?? "",
-    }
+    },
   });
   const onSubmit = (values: z.infer<typeof updateWorkpaceSchema>) => {
     const finalValues = {
       ...values,
       image: values.image instanceof File ? values.image : "",
-    }
-    mutate({ 
-      form: finalValues,
-      param:{workspaceId: initialValues.$id}
-     }, {
-      onSuccess: ({ data }) => {
-        form.reset();
-        router.push(`/workspaces/${data.$id}`);
-        onCancel?.();
-      }
-    });
+    };
+    mutate(
+      {
+        form: finalValues,
+        param: { workspaceId: initialValues.$id },
+      },
+      {
+        onSuccess: ({ data }) => {
+          form.reset();
+          router.push(`/workspaces/${data.$id}`);
+          onCancel?.();
+        },
+      },
+    );
   };
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       form.setValue("image", file);
     }
-  }
+  };
   return (
     <Card className="w-full h-full border-none shadow-none">
       <CardHeader className="flex flex-row items-center gap-x-4 p-7 space-y-0">
-        <Button size="sm" variant="secondary" onClick={onCancel?onCancel:()=>router.push(`/workspaces/${initialValues.$id}`)}>
-          <ArrowLeftIcon className="size-4 mr-2"/>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={
+            onCancel
+              ? onCancel
+              : () => router.push(`/workspaces/${initialValues.$id}`)
+          }
+        >
+          <ArrowLeftIcon className="size-4 mr-2" />
           Back
         </Button>
         <CardTitle className="text-xl font-bold">
@@ -79,14 +99,9 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Workspace Name
-                    </FormLabel>
+                    <FormLabel>Workspace Name</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Enter workspace name"
-                      />
+                      <Input {...field} placeholder="Enter workspace name" />
                     </FormControl>
                   </FormItem>
                 )}
@@ -103,9 +118,10 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
                             alt="Logo"
                             fill
                             className="object-cover"
-                            src={field.value instanceof File
-                              ? URL.createObjectURL(field.value)
-                              : field.value
+                            src={
+                              field.value instanceof File
+                                ? URL.createObjectURL(field.value)
+                                : field.value
                             }
                           />
                         </div>
@@ -114,12 +130,13 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
                           <AvatarFallback>
                             <ImageIcon className="size-[36px] text-neutral-400" />
                           </AvatarFallback>
-
                         </Avatar>
                       )}
                       <div className="flex flex-col">
                         <p className="text-sm">Workspace Icon</p>
-                        <p className="text-sm text-muted-foreground">JPG,PNG,SVG or JPEG, max 1mb</p>
+                        <p className="text-sm text-muted-foreground">
+                          JPG,PNG,SVG or JPEG, max 1mb
+                        </p>
                         <input
                           className="hidden"
                           type="file"
@@ -128,33 +145,33 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
                           disabled={isPending}
                           onChange={handleImageChange}
                         />
-                        {field.value?(
+                        {field.value ? (
                           <Button
-                          type="button"
-                          disabled={isPending}
-                          variant="destructive"
-                          size="xs"
-                          className="w-fit mt-2"
-                          onClick={() =>{
-                            field.onChange(null);
-                            if(inputRef.current){
-                              inputRef.current.value="";
-                            }
-                          } }
-                        >
-                          Remove Image
-                        </Button>
-                        ):(
+                            type="button"
+                            disabled={isPending}
+                            variant="destructive"
+                            size="xs"
+                            className="w-fit mt-2"
+                            onClick={() => {
+                              field.onChange(null);
+                              if (inputRef.current) {
+                                inputRef.current.value = "";
+                              }
+                            }}
+                          >
+                            Remove Image
+                          </Button>
+                        ) : (
                           <Button
-                          type="button"
-                          disabled={isPending}
-                          variant="teritary"
-                          size="xs"
-                          className="w-fit mt-2"
-                          onClick={() => inputRef.current?.click()}
-                        >
-                          Upload Image
-                        </Button>
+                            type="button"
+                            disabled={isPending}
+                            variant="teritary"
+                            size="xs"
+                            className="w-fit mt-2"
+                            onClick={() => inputRef.current?.click()}
+                          >
+                            Upload Image
+                          </Button>
                         )}
                       </div>
                     </div>
@@ -187,5 +204,5 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
         </Form>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

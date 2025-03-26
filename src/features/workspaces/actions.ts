@@ -7,7 +7,6 @@ import { Workspace } from "./types";
 
 export const getWorkspaces = async () => {
   try {
-
     const client = new Client()
       .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
       .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
@@ -19,11 +18,9 @@ export const getWorkspaces = async () => {
     const databases = new Databases(client);
     const account = new Account(client);
     const user = await account.get();
-    const members = await databases.listDocuments(
-      DATABASE_ID,
-      MEMBERS_ID,
-      [Query.equal("userId", user.$id)]
-    );
+    const members = await databases.listDocuments(DATABASE_ID, MEMBERS_ID, [
+      Query.equal("userId", user.$id),
+    ]);
     if (members.total === 0) {
       return { documents: [], total: 0 };
     }
@@ -31,23 +28,18 @@ export const getWorkspaces = async () => {
     const workspaces = await databases.listDocuments(
       DATABASE_ID,
       WORKSPACES_ID,
-      [
-        Query.orderDesc("$createdAt"),
-        Query.contains("$id", workspaceIds)
-      ]
+      [Query.orderDesc("$createdAt"), Query.contains("$id", workspaceIds)],
     );
-    return workspaces
-  }
-  catch {
+    return workspaces;
+  } catch {
     return { documents: [], total: 0 };
   }
 };
 interface GetWorkspaceProps {
   workspaceId: string;
-};
+}
 export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => {
   try {
-
     const client = new Client()
       .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
       .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
@@ -64,7 +56,7 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => {
       databases,
       userId: user.$id,
       workspaceId,
-    })
+    });
     if (!member) {
       return null;
     }
@@ -74,9 +66,8 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => {
       WORKSPACES_ID,
       workspaceId,
     );
-    return workspace
-  }
-  catch {
+    return workspace;
+  } catch {
     return null;
   }
 };

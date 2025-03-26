@@ -3,30 +3,26 @@ import { InferRequestType, InferResponseType } from "hono";
 import { client } from "@/lib/rpc";
 import { toast } from "sonner";
 
-type ResponseType = InferResponseType<typeof client.api.workspaces["$post"]>;
-type RequestType = InferRequestType<typeof client.api.workspaces["$post"]>;
+type ResponseType = InferResponseType<(typeof client.api.workspaces)["$post"]>;
+type RequestType = InferRequestType<(typeof client.api.workspaces)["$post"]>;
 
-export const useCreateWorkspace=()=>{
+export const useCreateWorkspace = () => {
   const queryClient = useQueryClient();
-  const mutation = useMutation<
-  ResponseType,
-  Error,
-  RequestType
-  >({
-    mutationFn: async ({form}) => {
+  const mutation = useMutation<ResponseType, Error, RequestType>({
+    mutationFn: async ({ form }) => {
       const response = await client.api.workspaces["$post"]({ form });
-      if(!response.ok){
+      if (!response.ok) {
         throw new Error("Failed to create Workspace");
       }
       return await response.json();
     },
-    onSuccess:()=>{
-      toast.success("Workspace Created")
-      queryClient.invalidateQueries({ queryKey: ["workspaces"] })
+    onSuccess: () => {
+      toast.success("Workspace Created");
+      queryClient.invalidateQueries({ queryKey: ["workspaces"] });
     },
-    onError:()=>{
+    onError: () => {
       toast.error("Failed to create Workspace");
-    }
+    },
   });
   return mutation;
-}
+};

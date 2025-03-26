@@ -21,7 +21,7 @@ const StandloneLayout = ({ children }: StandloneLayoutProps) => {
         </div>
       </div>
     </main>
-  )
-}
+  );
+};
 
-export default StandloneLayout
+export default StandloneLayout;

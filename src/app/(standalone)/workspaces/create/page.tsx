@@ -12,4 +12,4 @@ const WorkspaceCreatePage = async () => {
   );
 };
 
-export default WorkspaceCreatePage
+export default WorkspaceCreatePage;

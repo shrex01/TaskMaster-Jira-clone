@@ -1,25 +1,19 @@
 import { useMedia } from "react-use";
 
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
-import {
-  Drawer,
-  DrawerContent
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 
 interface ResponsiveModalProps {
   children: React.ReactNode;
-  open: boolean,
+  open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export const ResponsiveModal = ({
   children,
   open,
-  onOpenChange
+  onOpenChange,
 }: ResponsiveModalProps) => {
   const isDesktop = useMedia("(min-width:1024px)", true);
   if (isDesktop) {
@@ -29,7 +23,7 @@ export const ResponsiveModal = ({
           {children}
         </DialogContent>
       </Dialog>
-    )
+    );
   }
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>

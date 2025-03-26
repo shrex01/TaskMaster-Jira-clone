@@ -5,20 +5,18 @@ import { json } from "stream/consumers";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-type ResponseType = InferResponseType<typeof client.api.auth.register["$post"]>;
-type RequestType = InferRequestType<typeof client.api.auth.register["$post"]>
+type ResponseType = InferResponseType<
+  (typeof client.api.auth.register)["$post"]
+>;
+type RequestType = InferRequestType<(typeof client.api.auth.register)["$post"]>;
 
-export const useRegister=()=>{
+export const useRegister = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const mutation = useMutation<
-  ResponseType,
-  Error,
-  RequestType
-  >({
-    mutationFn: async ({json}) => {
+  const mutation = useMutation<ResponseType, Error, RequestType>({
+    mutationFn: async ({ json }) => {
       const response = await client.api.auth.register["$post"]({ json });
-      if(!response.ok){
+      if (!response.ok) {
         throw new Error("Failed to Register");
       }
       return await response.json();
@@ -26,11 +24,11 @@ export const useRegister=()=>{
     onSuccess: () => {
       toast.success("Registered Successfully");
       router.refresh();
-      queryClient.invalidateQueries({ queryKey: ["current"] })
+      queryClient.invalidateQueries({ queryKey: ["current"] });
     },
-    onError:()=>{
+    onError: () => {
       toast.error("Failed to Register");
-    }
+    },
   });
   return mutation;
-}
+};

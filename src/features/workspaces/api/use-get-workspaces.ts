@@ -14,4 +14,4 @@ export const useGetWorkspaces = () => {
     },
   });
   return query;
-}
+};

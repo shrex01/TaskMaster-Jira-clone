@@ -7,7 +7,6 @@ import { Sidebar } from "./sidebar";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
-
 export const MobileSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathName = usePathname();
@@ -24,7 +23,6 @@ export const MobileSidebar = () => {
       <SheetContent side="left" className="p-0">
         <Sidebar />
       </SheetContent>
-
     </Sheet>
-  )
-}
+  );
+};
