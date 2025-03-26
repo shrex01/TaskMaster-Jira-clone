@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import { QueryProvider } from "@/components/query-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { NuqsAdapter } from 'nuqs/adapters/next/pages'
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -22,8 +23,10 @@ export default function RootLayout({
         className={cn(inter.className, "antialiased min-h-screen")}
       >
         <QueryProvider>
+        <NuqsAdapter>
           <Toaster/>
           {children}
+        </NuqsAdapter>  
         </QueryProvider>
       </body>
     </html>
