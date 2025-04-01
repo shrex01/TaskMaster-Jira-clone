@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { Workspace } from "../types";
 import { useUpdateWorkspace } from "../api/use-update-workspace";
 import { useConfirm } from "@/hooks/use-confirm";
+import { useDeleteWorkspace } from "../api/use-delete-workspace";
 
 interface EditWorkspaceFormProps {
   onCancel?: () => void;
@@ -40,6 +41,8 @@ export const EditWorkspaceForm = ({
   );
   const router = useRouter();
   const { mutate, isPending } = useUpdateWorkspace();
+  const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
+    useDeleteWorkspace();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof updateWorkpaceSchema>>({
@@ -52,7 +55,16 @@ export const EditWorkspaceForm = ({
   const handleDelete = async () => {
     const ok = await confirmDelete();
     if (!ok) return;
-    console.log("deleting...");
+    deleteWorkspace(
+      {
+        param: { workspaceId: initialValues.$id },
+      },
+      {
+        onSuccess: () => {
+          window.location.href = "/";
+        },
+      },
+    );
   };
   const onSubmit = (values: z.infer<typeof updateWorkpaceSchema>) => {
     const finalValues = {
@@ -230,7 +242,7 @@ export const EditWorkspaceForm = ({
               size="sm"
               variant="destructive"
               type="button"
-              disabled={isPending}
+              disabled={isPending || isDeletingWorkspace}
               onClick={handleDelete}
             >
               Delete workspace
