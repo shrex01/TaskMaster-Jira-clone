@@ -1,48 +1,55 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DottedSeperator } from "@/components/dotted-seperator";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useRef } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import Image from "next/image";
-import { ImageIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { useCreateProject } from "../api/use-create-project";
-import { createProjectSchema } from "../schemas";
-import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+'use client';
 
-interface CreateProjectFormProps {
+import { z } from 'zod';
+import { useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { ImageIcon } from 'lucide-react';
+
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
+
+import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { DottedSeparator } from '@/components/dotted-separator';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+
+import { useCreateProject } from '../api/use-create-projects';
+import { createProjectSchema } from '../schema';
+
+interface CreateProjectFormProp {
   onCancel?: () => void;
 }
 
-export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
+export const CreateProjectForm = ({ onCancel }: CreateProjectFormProp) => {
   const workspaceId = useWorkspaceId();
   const router = useRouter();
   const { mutate, isPending } = useCreateProject();
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      form.setValue('image', file);
+    }
+  };
   const inputRef = useRef<HTMLInputElement>(null);
+
   const form = useForm<z.infer<typeof createProjectSchema>>({
     resolver: zodResolver(createProjectSchema.omit({ workspaceId: true })),
     defaultValues: {
-      name: "",
+      name: '',
     },
   });
+
   const onSubmit = (values: z.infer<typeof createProjectSchema>) => {
     const finalValues = {
       ...values,
       workspaceId,
-      image: values.image instanceof File ? values.image : "",
+      image: values.image instanceof File ? values.image : '',
     };
     mutate(
       { form: finalValues },
@@ -50,27 +57,20 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
         onSuccess: ({ data }) => {
           form.reset();
           router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
-          onCancel?.();
         },
-      },
+      }
     );
   };
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      form.setValue("image", file);
-    }
-  };
+
   return (
     <Card className="w-full h-full border-none shadow-none">
       <CardHeader className="flex p-7">
-        <CardTitle className="text-xl font-bold">
-          Create a new project
-        </CardTitle>
+        <CardTitle>Create a new project</CardTitle>
       </CardHeader>
       <div className="px-7">
-        <DottedSeperator />
+        <DottedSeparator />
       </div>
+
       <CardContent className="p-7">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -80,7 +80,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Project Name</FormLabel>
+                    <FormLabel>Project name</FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Enter project name" />
                     </FormControl>
@@ -109,22 +109,22 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                       ) : (
                         <Avatar className="size-[72px]">
                           <AvatarFallback>
-                            <ImageIcon className="size-[36px] text-neutral-400" />
+                            <ImageIcon className="size-[34px]" />
                           </AvatarFallback>
                         </Avatar>
                       )}
                       <div className="flex flex-col">
-                        <p className="text-sm">Project Icon</p>
+                        <p className="text-sm">Project icon</p>
                         <p className="text-sm text-muted-foreground">
-                          JPG,PNG,SVG or JPEG, max 1mb
+                          JPG, JPEG, PNG, GIF or SVG, max 1mb
                         </p>
                         <input
                           className="hidden"
                           type="file"
-                          accept=".jpg, .png, .jpeg, .svg"
+                          accept=".jpg,.png,.jpeg,.svg,.gif"
                           ref={inputRef}
-                          disabled={isPending}
                           onChange={handleImageChange}
+                          disabled={isPending}
                         />
                         {field.value ? (
                           <Button
@@ -136,7 +136,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                             onClick={() => {
                               field.onChange(null);
                               if (inputRef.current) {
-                                inputRef.current.value = "";
+                                inputRef.current.value = '';
                               }
                             }}
                           >
@@ -160,7 +160,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                 )}
               />
             </div>
-            <DottedSeperator className="py-7" />
+            <DottedSeparator className="py-7" />
             <div className="flex items-center justify-between">
               <Button
                 type="button"
@@ -168,17 +168,12 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                 variant="secondary"
                 onClick={onCancel}
                 disabled={isPending}
-                className={cn(!onCancel && "invisible")}
+                className={cn(!onCancel && 'invisible')}
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                size="lg"
-                variant="primary"
-                disabled={isPending}
-              >
-                Create Project
+              <Button type="submit" size="lg" disabled={isPending}>
+                Create project
               </Button>
             </div>
           </form>

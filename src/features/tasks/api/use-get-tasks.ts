@@ -1,49 +1,44 @@
-import { useQuery } from "@tanstack/react-query";
-import { client } from "@/lib/rpc";
-import { TaskStatus } from "../types";
+import { client } from '@/lib/rpc';
+import { useQuery } from '@tanstack/react-query';
+import { TaskStatus } from '../types';
+
 interface useGetTasksProps {
   workspaceId: string;
   projectId?: string | null;
   status?: TaskStatus | null;
-  asigneeId?: string | null;
-  dueDate?: string | null;
   search?: string | null;
+  assigneeId?: string | null;
+  dueDate?: string | null;
 }
+
 export const useGetTasks = ({
   workspaceId,
   projectId,
   status,
-  asigneeId,
-  dueDate,
   search,
+  assigneeId,
+  dueDate,
 }: useGetTasksProps) => {
   const query = useQuery({
-    queryKey: [
-      "tasks",
-      workspaceId,
-      projectId,
-      status,
-      asigneeId,
-      dueDate,
-      search,
-    ],
+    queryKey: ['tasks', workspaceId, projectId, status, search, assigneeId, dueDate],
     queryFn: async () => {
       const response = await client.api.tasks.$get({
         query: {
           workspaceId,
           projectId: projectId ?? undefined,
           status: status ?? undefined,
-          asigneeId: asigneeId ?? undefined,
-          dueDate: dueDate ?? undefined,
           search: search ?? undefined,
+          assigneeId: assigneeId ?? undefined,
+          dueDate: dueDate ?? undefined,
         },
       });
       if (!response.ok) {
-        throw new Error("Failed to fetch tasks");
+        throw new Error('Failed to get task');
       }
       const { data } = await response.json();
       return data;
     },
   });
+
   return query;
 };

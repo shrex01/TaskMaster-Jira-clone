@@ -1,11 +1,20 @@
-import { getCurrent } from "@/features/auth/queries";
-import { SignUpCard } from "@/features/auth/components/sign-up-card";
-import { redirect } from "next/navigation";
+import { getCurrent } from '@/features/auth/queries';
+import { SignUpCard } from '@/features/auth/components/sign-up-card';
+import { redirect } from 'next/navigation';
 
-const SignUp = async () => {
+const SignUpPage = async () => {
   const user = await getCurrent();
-  if (user) redirect("/");
-  return <SignUpCard />;
+
+  if (user) redirect('/');
+
+  return (
+    <>
+      <head>
+        <title>TaskMaster | Sign Up</title>
+      </head>
+      <SignUpCard />
+    </>
+  );
 };
 
-export default SignUp;
+export default SignUpPage;

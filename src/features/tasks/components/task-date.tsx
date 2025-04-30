@@ -1,5 +1,5 @@
-import { differenceInDays, format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
+import { differenceInDays, format } from 'date-fns';
 
 interface TaskDateProps {
   value: string;
@@ -11,18 +11,19 @@ export const TaskDate = ({ value, className }: TaskDateProps) => {
   const endDate = new Date(value);
   const diffInDays = differenceInDays(endDate, today);
 
-  let textColor = "text-muted-foreground";
+  let textColor = 'text-muted-foreground';
+
   if (diffInDays <= 3) {
-    textColor = "text-red-500";
+    textColor = 'text-red-500';
   } else if (diffInDays <= 7) {
-    textColor = "text-orange-500";
+    textColor = 'text-orange-500';
   } else if (diffInDays <= 14) {
-    textColor = "text-yellow-500";
+    textColor = 'text-yellow-500';
   }
 
   return (
     <div className={textColor}>
-      <span className={cn("truncate", className)}>{format(value, "PPP")}</span>
+      <span className={cn('truncate', className)}>{format(value, 'PPP')}</span>
     </div>
   );
 };
