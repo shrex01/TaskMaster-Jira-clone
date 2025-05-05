@@ -9,6 +9,7 @@ interface WorkspaceAvatarProps {
 }
 
 export const WorkspaceAvatar = ({ image, name, className }: WorkspaceAvatarProps) => {
+  console.log('image:', image)
   if (image) {
     return (
       <div className={cn('size-10 relative rounded-md overflow-hidden', className)}>
